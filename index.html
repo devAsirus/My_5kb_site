@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<body> 
+    <canvas id="game" width="400" height="400"></canvas>
+    <script>
+        const c=document.getElementById("game"),x=c.getContext("2d");
+        let s=[{x:200,y:200}],f={x:100,y:100},dx=20,dy=0,score=0,over=false;
+        document.onkeydown=e=>{
+            if(e.key=="ArrowUp"&&dy==0)dx=0,dy=-20;
+            if(e.key=="ArrowDown"&&dy==0)dx=0,dy=20;
+            if(e.key=="ArrowLeft"&&dx==0)dx=-20,dy=0;
+            if(e.key=="ArrowRight"&&dx==0)dx=20,dy=0;
+        };
+        
+        function game(){
+            if(over)return;
+            x.fillStyle="black";x.fillRect(0,0,400,400);
+
+            let h={x:s[0].x+dx,y:s[0].y+dy};
+
+            if(h.x<0||h.x>=400||h.y<0||h.y>=400||s.some(p=>p.x==h.x&&p.y==h.y)){
+                over=true;
+                x.fillStyle="white";
+                x.font="30px Arial";
+                x.fillText("GAME OVER",120,190);
+                x.font="18px Arial";
+                x.fillText("Score: "+score,165,220);
+                return;
+            }
+            s.unshift(h);
+            if(h.x==f.x&&h.y==f.y){
+                score++;
+                do{
+                    f={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20};
+                }while(s.some(p=>p.x==f.x&&p.y==f.y));
+            }else s.pop();
+            x.fillStyle="lime";
+            s.forEach(p=>x.fillRect(p.x,p.y,18,18));
+
+            x.fillStyle="red";
+            x.fillRect(f.x,f.y,18,18);
+
+            x.fillStyle="white";
+            x.font="16px Arial";
+            x.fillText("Score: "+score,10,20);
+        }
+
+        setInterval(game,100);
+    </script>
+</body>
+</html>
